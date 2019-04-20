@@ -1,0 +1,109 @@
+{
+  "autoBasePath": true,
+  "entrypoint": "assets/index.html",
+  "shell": "assets/ship-ahoy-app.js",
+  "fragments": [
+    "assets/pages/about-page.js",
+    "assets/pages/impressum-page.js",
+    "assets/pages/map/map-page.js",
+    "assets/pages/ship-ahoy-404-page.js"
+  ],
+  "sources": [
+    "assets/**/*"
+  ],
+  "extraDependencies": [
+    "assets/manifest.json",
+    "node_modules/rbush/*.js",
+    "node_modules/cheap-ruler/*.js",
+    "node_modules/socket.io-client/dist/*.js",
+    "node_modules/@webcomponents/webcomponentsjs/*.js",
+    "!node_modules/@webcomponents/webcomponentsjs/gulpfile.js",
+    "node_modules/@webcomponents/webcomponentsjs/bundles/*.js"
+  ],
+  "builds": [
+    {
+      "name": "es5-bundled",
+      "js": {
+        "compile": "es5",
+        "minify": {
+          "exclude": [
+            "assets/ship-ahoy-mapbox-gl.js"
+          ]
+        },
+        "transformModulesToAmd": true
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": {
+        "exclude": [
+          "assets/ship-ahoy-mapbox-gl.js"
+        ]
+      },
+      "addServiceWorker": true
+    },
+    {
+      "name": "es6-bundled",
+      "browserCapabilities": [
+        "es2015"
+      ],
+      "js": {
+        "compile": "es2015",
+        "minify": {
+          "exclude": [
+            "assets/ship-ahoy-mapbox-gl.js"
+          ]
+        },
+        "transformModulesToAmd": true
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": {
+        "exclude": [
+          "assets/ship-ahoy-mapbox-gl.js"
+        ]
+      },
+      "addServiceWorker": true
+    },
+    {
+      "name": "esm-bundled",
+      "browserCapabilities": [
+        "es2015",
+        "modules"
+      ],
+      "js": {
+        "minify": {
+          "exclude": [
+            "assets/ship-ahoy-mapbox-gl.js"
+          ]
+        }
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": {
+        "exclude": [
+          "assets/ship-ahoy-mapbox-gl.js"
+        ]
+      },
+      "addServiceWorker": true
+    }
+  ],
+  "moduleResolution": "node",
+  "npm": true,
+  "lint": {
+    "rules": [
+      "polymer-3"
+    ]
+  }
+}

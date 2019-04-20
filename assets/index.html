@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>Hamburg Live</title>
+    <meta name="description" content="Live vessel movements in Hamburg">
+
+    <base href="/">
+
+    <link rel="icon" href="assets/images/favicon.ico?id=3">
+
+    <!-- See https://goo.gl/OOhYW5 -->
+    <link rel="manifest" href="assets/manifest.json">
+
+    <!-- See https://goo.gl/qRE0vM -->
+    <meta name="theme-color" content="#3f51b5">
+
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Hamburg Live">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Hamburg Live">
+
+    <!-- Homescreen icons -->
+    <link rel="apple-touch-icon" href="assets/images/manifest/icon-48x48.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/images/manifest/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="assets/images/manifest/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/images/manifest/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="assets/images/manifest/icon-192x192.png">
+
+    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="assets/images/manifest/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#3f51b5">
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <script>
+      window.ShipAhoyAppGlobals = { rootPath: '/' }
+
+      // Show a toast with a service-worker-related update.
+      window.showToast = message => {
+        let toast = document.getElementById('sw-toast')
+        if (!toast) {
+          toast = document.createElement('paper-toast')
+          toast.id = 'sw-toast'
+          document.body.appendChild(toast)
+        }
+        toast.textContent = message
+        toast.show()
+      }
+
+      // Redux assumes `process.env.NODE_ENV` exists in the ES module build.
+      // https://github.com/reactjs/redux/issues/2907
+      window.process = { env: { NODE_ENV: 'production' } }
+
+      const loadServiceWorker = () => {
+        navigator.serviceWorker
+          .register('service-worker.js', { scope: ShipAhoyAppGlobals.rootPath })
+          .then(registration => {
+            registration.onupdatefound = () => {
+              // The updatefound event implies that registration.installing is set
+              const installingWorker = registration.installing;
+              installingWorker.onstatechange = () => {
+                switch (installingWorker.state) {
+                  case 'redundant':
+                    throw Error('The installing service worker became redundant.')
+                    break
+                }
+              }
+            }
+          })
+          .catch(event => console.error('Service worker registration failed', event))
+
+          // Check to see if the service worker controlling the page at initial load
+          // has become redundant, since this implies there's a new service worker with fresh content.
+          if (!navigator.serviceWorker.controller) return
+          navigator.serviceWorker.controller.onstatechange = event => {
+            if (event.target.state !== 'redundant') return
+            window.showToast('Site updated. Refresh this page to see the latest content.')
+          }
+      }
+      // Load and register pre-caching Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', loadServiceWorker)
+      }
+    </script>
+
+    <script
+        crossorigin="use-credentials"
+        src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"
+        type="application/javascript">
+    </script>
+
+    <!-- Load mapbox js and css -->
+    <script
+        src="assets/ship-ahoy-mapbox-gl.js"
+        crossorigin="use-credentials"
+        type="application/javascript">
+    </script>
+    <script type="text/javascript">
+      mapboxgl.accessToken = 'pk.eyJ1Ijoid2llbTAwOCIsImEiOiJjamN6enQyeDIxaXo3MnhvMWl4aDdyZ25xIn0.JRtqknDdt3bop-LBEkuPcw'
+    </script>
+    <script
+        src="node_modules/cheap-ruler/cheap-ruler.min.js"
+        crossorigin="use-credentials"
+        type="application/javascript">
+    </script>
+    <script type="text/javascript">
+      window.ruler = cheapRuler(53.52676, 'meters');
+    </script>
+    <script
+        src="node_modules/rbush/rbush.min.js"
+        crossorigin="use-credentials"
+        type="application/javascript">
+    </script>
+    <script
+        src="node_modules/socket.io-client/dist/socket.io.js"
+        crossorigin="use-credentials"
+        type="application/javascript">
+    </script>
+    <script
+        src="assets/ship-ahoy-app.js"
+        type="module"
+        crossorigin="use-credentials">
+    </script>
+    <style>
+      body {
+        background-color: #eeeeee;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        line-height: 1.5;
+        margin: 0;
+        min-height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <ship-ahoy-app></ship-ahoy-app>
+    <noscript>
+      Please enable JavaScript to view this website.
+    </noscript>
+    <!-- Built with love using Polymer Starter Kit -->
+  </body>
+</html>

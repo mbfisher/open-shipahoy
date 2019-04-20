@@ -1,0 +1,6 @@
+node_modules
+build
+ship-ahoy-mapbox-gl.js
+.env
+.DS_Store
+yarn-error.log
