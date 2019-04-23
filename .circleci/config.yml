@@ -24,13 +24,13 @@ jobs:
           name: Build and tag docker image
           command: |
             TAG=$CIRCLE_BUILD_NUM
-            docker build -t open-shipahoy:$TAG .
-            docker tag open-shipahoy:$TAG $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/open-shipahoy:latest
-            docker tag open-shipahoy:$TAG $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/open-shipahoy:$TAG
+            docker build -t shipahoy:$TAG .
+            docker tag shipahoy:$TAG $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/shipahoy:latest
+            docker tag shipahoy:$TAG $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/shipahoy:$TAG
       - run:
           name: Push docker image to AWS ECR (Docker registry)
           command: |
-            docker push $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/open-shipahoy
+            docker push $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/shipahoy
   production:
     docker:
       - image: buildpack-deps:stretch
