@@ -6,13 +6,6 @@ export const getPositions = () => {
   }
 }
 
-// export const setLatestPositionTimestamp = timestamp => {
-//   return {
-//     type: actions.SET_LATEST_POSITION_TIMESTAMP,
-//     payload: { timestamp }
-//   }
-// }
-
 export const setPositions = vessels => {
   return {
     type: actions.SET_POSITIONS,

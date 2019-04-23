@@ -18,10 +18,6 @@ export const computePositionsTree = (oldTree, animationTimestamp) => {
     // new timestamp for the vessel
     const timestamp = vesselTimestamp + timeStep;
     const positionIndex = vessel.positions.findIndex(position => position.timestamp > timestamp);
-    // if (vessel.mmsi == 211072478 && vessel.positions.length > 1) {
-    //   debugger
-    //   console.log(vesselTimestamp)
-    // }
     if (positionIndex >= 0) {
       // starting AIS position from which we calculate interpolated position
       const start = vessel.positions[positionIndex - 1];

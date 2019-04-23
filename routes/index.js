@@ -21,6 +21,7 @@ function simulatorProxy(req) {
 router.get('/api/v1/hamburg/vessels', async (req, res, next) => {
   try {
     const result = await simulatorProxy(req)
+    // return res.status(500).send({})
     return res.status(200).send(result)
   } catch(error) {
     return next(error)

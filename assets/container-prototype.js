@@ -15,7 +15,7 @@ export class ContainerPrototype extends connect(store)(PolymerElement) {
     )
   }
 
-  // override in child
+  // overwrite in child
   _stateChanged(state) {}
 }
 

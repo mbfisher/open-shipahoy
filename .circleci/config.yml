@@ -51,26 +51,6 @@ jobs:
             ssh -t ubuntu@$PRODUCTION_PUBLIC_DNS '. ~/.profile; cd /home/ubuntu/shipahoy && sudo -E docker-compose pull'
             ssh -t ubuntu@$PRODUCTION_PUBLIC_DNS '. ~/.profile; cd /home/ubuntu/shipahoy && sudo -E docker-compose up -d'
             ssh -t ubuntu@$PRODUCTION_PUBLIC_DNS 'docker system prune -f'
-  staging:
-    docker:
-      - image: buildpack-deps:stretch
-    steps:
-      - checkout
-      - run: |
-          echo "The deploy host target is: $STAGING_PUBLIC_DNS"
-      - run:
-          name: Make host a known host for working ssh connections
-          command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H $STAGING_PUBLIC_DNS >> ~/.ssh/known_hosts
-      - run:
-          name: Deploy on target host
-          command: |
-            scp docker-compose.yml "ubuntu@$STAGING_PUBLIC_DNS:shipahoy/docker-compose.yml"
-            ssh ubuntu@$STAGING_PUBLIC_DNS '. ~/.profile; eval sudo $(aws ecr get-login --no-include-email --region eu-central-1)'
-            ssh -t ubuntu@$STAGING_PUBLIC_DNS '. ~/.profile; cd /home/ubuntu/shipahoy && sudo -E docker-compose pull'
-            ssh -t ubuntu@$STAGING_PUBLIC_DNS '. ~/.profile; cd /home/ubuntu/shipahoy && sudo -E docker-compose up -d'
-            ssh -t ubuntu@$STAGING_PUBLIC_DNS 'docker system prune -f'
 
 workflows:
   version: 2
@@ -81,7 +61,6 @@ workflows:
             branches:
               only:
                 - production
-                - staging
       - production:
           requires:
             - build-and-push
@@ -89,10 +68,3 @@ workflows:
             branches:
               only:
                 - production
-      - staging:
-          requires:
-            - build-and-push
-          filters:
-            branches:
-              only:
-                - staging

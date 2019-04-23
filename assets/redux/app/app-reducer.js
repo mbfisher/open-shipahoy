@@ -13,10 +13,10 @@ const appReducer = (state = INITIAL_STATE, action) => {
       var { page } = payload
       return { ...state, page }
 
-    case actions.UPDATE_ERROR:
+    case actions.ERROR:
       var { error } = payload
+      debugger
       var errors = state.errors.slice()
-      if (error.toString) error = error.toString()
       errors.push(error)
       return { ...state, errors }
 

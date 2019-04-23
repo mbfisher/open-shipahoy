@@ -1,17 +1,34 @@
-# shipahoy
+# open shipahoy
 
-|Branch | Build status |
-|-------|--------------|
-|develop|[![CircleCI](https://circleci.com/gh/maritime-datasystems/shipahoy/tree/develop.svg?style=svg&circle-token=a516ccc959f272c5fe992147ca0f5d426126a286)](https://circleci.com/gh/maritime-datasystems/shipahoy/tree/develop)|
-|master|[![CircleCI](https://circleci.com/gh/maritime-datasystems/shipahoy/tree/master.svg?style=svg&circle-token=a516ccc959f272c5fe992147ca0f5d426126a286)](https://circleci.com/gh/maritime-datasystems/shipahoy/tree/master)|
+This is an open source version of shipahoy
 
-# Shipahoy
+## Install
 
-## Configuration
-
-Create a `.env` file at `app/config` and add
-`SIMULATOR_SERVICE` with the URL and PORT to the simulator API on the gateway to it:
-
-```bash
-echo 'SIMULATOR_SERVICE=http://<URL>:<PORT>/simulator' > app/config/.env
+Install yarn
+```sh
+npm install --global yarn
 ```
+Install application dependencies
+```sh
+yarn install
+```
+In `env/` create a `.env` file, use `template.env` as a model.
+
+## Run
+
+### Development
+
+Make sure that `NODE_ENV=development`.
+```sh
+yarn start
+```
+Application should be available at `http://localhost:3000`
+
+### Production
+
+Make sure that `NODE_ENV=production`.
+```sh
+yarn build
+yarn prod
+```
+Application should be available at `http://localhost:3000`

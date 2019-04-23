@@ -2,11 +2,6 @@ import * as actions from '../actions.js'
 import { updatePage } from './app-actions.js'
 import { getVessels } from '../vessels/vessels-actions.js'
 
-export const loggerMdl = () => next => action => {
-  // console.log(action.type)
-  next(action)
-}
-
 export const navigateMdl = ({ dispatch }) => next => action => {
   next(action)
   if (action.type !== actions.NAVIGATE) return
@@ -17,7 +12,6 @@ export const navigateMdl = ({ dispatch }) => next => action => {
 }
 
 export const appMdls = [
-  // loggerMdl,
   navigateMdl,
 ]
 

@@ -5,7 +5,6 @@ import {
   mapVessel,
 } from '../../helpers.js'
 import * as actions from '../actions.js'
-// import moment from 'moment'
 import { showError } from '../app/app-actions.js'
 import { portBBoxSelector } from '../app/app-selectors.js'
 import {
@@ -27,15 +26,22 @@ export const getVesselsMdl = ({ dispatch }) => next => action => {
   if (action.type !== actions.GET_VESSELS) return
   dispatch(getVesselsRequest())
   fetch('/api/v1/hamburg/vessels')
-    .then(res => res.json())
+    .then(response => {
+      if (response.ok) return response.json()
+      throw new Error("Couldn't load vessels")
+    })
     .then(vessels => {
       dispatch(getVesselsSuccess())
       dispatch(setVessels(vessels))
     })
-    .catch(error => {
-      debugger
-      dispatch(getVesselsFailure(error))
-    })
+    .catch(error => dispatch(getVesselsFailure(error)))
+}
+
+export const getVesselsFailureMdl = ({ dispatch }) => next => action => {
+  next(action)
+  if (action.type !== actions.GET_VESSELS_FAILURE) return
+  const { error } = action.payload
+  dispatch(showError(error))
 }
 
 export const setVesselsMdl = ({ dispatch, getState }) => next => action => {
@@ -70,6 +76,7 @@ export const updateVesselPositionMdl = ({ dispatch, getState }) => next => actio
 
 export const vesselsMdls = [
   getVesselsMdl,
+  getVesselsFailureMdl,
   setVesselsMdl,
   updateVesselPositionMdl,
 ]

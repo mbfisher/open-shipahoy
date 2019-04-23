@@ -17,26 +17,26 @@ module.exports = app => {
 
   app.socketio = socketio()
 
-  app.socketio.on('connection', socket => {
-    console.log('user connected via socket.io')
+  // app.socketio.on('connection', socket => {
+  //   console.log('user connected via socket.io')
 
-    client.on('error', err => {
-      console.log(`mqtt error: ${err}`)
-      socket.emit('error', err)
-    })
+  //   client.on('error', err => {
+  //     console.log(`mqtt error: ${err}`)
+  //     socket.emit('error', err)
+  //   })
 
-    client.on('offline', () => {
-      console.log('mqtt offline')
-      socket.emit('error', 'offline')
-    })
+  //   client.on('offline', () => {
+  //     console.log('mqtt offline')
+  //     socket.emit('error', 'offline')
+  //   })
 
-    client.on('message', (topic, messageObj) => {
-      const messageString = messageObj.toString()
-      if (!messageString) return
-      const message = JSON.parse(messageString)
-      socket.emit('message', message)
-    })
+  //   client.on('message', (topic, messageObj) => {
+  //     const messageString = messageObj.toString()
+  //     if (!messageString) return
+  //     const message = JSON.parse(messageString)
+  //     socket.emit('message', message)
+  //   })
 
-  })
+  // })
 }
 

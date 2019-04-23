@@ -1,7 +1,7 @@
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js'
 import { installRouter } from 'pwa-helpers/router.js'
 import { setPassiveTouchGestures, setRootPath } from '@polymer/polymer/lib/utils/settings.js'
-import { updateMetadata } from 'pwa-helpers/metadata.js';
+import { updateMetadata } from 'pwa-helpers/metadata.js'
 import '@polymer/iron-flex-layout/iron-flex-layout.js'
 import '@polymer/iron-pages/iron-pages.js'
 import '@polymer/iron-selector/iron-selector.js'
@@ -11,13 +11,8 @@ import './ship-ahoy-icons.js'
 import './ship-ahoy-shared-styles.js'
 import { errorsSelector, pageSelector } from './redux/app/app-selectors.js'
 import { showError, navigate } from './redux/app/app-actions.js'
-import { ContainerPrototype } from './container-prototype.js';
-import { store } from './redux/store.js';
-// import moment from 'moment'
-// import 'moment-timezone/moment-timezone.js'
-// moment.tz.add("Europe/Berlin|CET CEST CEMT|-10 -20 -30|01010101010101210101210101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010|-2aFe0 11d0 1iO0 11A0 1o00 11A0 Qrc0 6i00 WM0 1fA0 1cM0 1cM0 1cM0 kL0 Nc0 m10 WM0 1ao0 1cp0 dX0 jz0 Dd0 1io0 17c0 1fA0 1a00 1ehA0 1a00 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00|41e5");
-// moment.tz.setDefault("Europe/Berlin");
-
+import { ContainerPrototype } from './container-prototype.js'
+import { store } from './redux/store.js'
 
 // Gesture events like tap and track generated from touch will not be
 // preventable, allowing for better scrolling performance.
@@ -107,7 +102,9 @@ class ShipAhoyApp extends ContainerPrototype {
 
   _errorsChanged(errors) {
     if (!errors || !errors.length) return
-    this.$.toast.show(errors[errors.length - 1])
+    let error = errors[errors.length - 1]
+    if (error.toString) error = error.toString()
+    this.$.toast.show(error)
   }
 
   _stateChanged(state) {
