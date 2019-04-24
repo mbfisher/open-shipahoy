@@ -15,7 +15,6 @@ const appReducer = (state = INITIAL_STATE, action) => {
 
     case actions.ERROR:
       var { error } = payload
-      debugger
       var errors = state.errors.slice()
       errors.push(error)
       return { ...state, errors }
