@@ -1,21 +1,23 @@
-import '@polymer/iron-collapse/iron-collapse.js'
-import '@polymer/iron-list/iron-list.js'
-import '@polymer/paper-button/paper-button.js'
-import '@polymer/paper-item/paper-item.js'
-import '../../ship-ahoy-icons.js'
-import '../../ship-ahoy-shared-styles.js'
-import { html } from '@polymer/polymer/polymer-element.js'
-import { ContainerPrototype } from '../../container-prototype.js'
-import { store } from '../../redux/store.js'
+import "@polymer/iron-collapse/iron-collapse.js";
+import "@polymer/iron-list/iron-list.js";
+import "@polymer/paper-button/paper-button.js";
+import "@polymer/paper-item/paper-item.js";
+import "../../ship-ahoy-icons.js";
+import "../../ship-ahoy-shared-styles.js";
+import { html } from "@polymer/polymer/polymer-element.js";
+import { ContainerPrototype } from "../../container-prototype.js";
+import { store } from "../../redux/store.js";
 import {
   vesselsSelector,
   vesselGroupsSelector,
   selectedVesselSelector
-} from '../../redux/vessels/vessels-selectors.js'
-import { selectVessel } from '../../redux/vessels/vessels-actions.js'
+} from "../../redux/vessels/vessels-selectors.js";
+import { selectVessel } from "../../redux/vessels/vessels-actions.js";
 
 class VesselsList extends ContainerPrototype {
-  static get is() { return 'vessels-list' }
+  static get is() {
+    return "vessels-list";
+  }
 
   static get template() {
     return html`
@@ -29,7 +31,7 @@ class VesselsList extends ContainerPrototype {
           --iron-list-items-container: {
             @apply --layout-horizontal;
             @apply --layout-center-justified;
-          };
+          }
         }
         paper-button {
           color: white;
@@ -46,7 +48,7 @@ class VesselsList extends ContainerPrototype {
           @apply --layout-justified;
           --paper-item: {
             padding: 0px 8px;
-          };
+          }
         }
         paper-item[active] {
           background-color: var(--paper-grey-300);
@@ -62,15 +64,22 @@ class VesselsList extends ContainerPrototype {
       </style>
 
       <template is="dom-repeat" items="[[_vesselGroups]]" as="group">
-        <paper-button style$="[[_computeColorAndShow(group)]]" on-tap="_toggleCollapse">
+        <paper-button
+          style$="[[_computeColorAndShow(group)]]"
+          on-tap="_toggleCollapse"
+        >
           [[group.name]]
         </paper-button>
-        <iron-collapse id$="collapse[[group.index]]">
+        <iron-collapse
+          id$="collapse[[group.index]]"
+          opened="[[_isGroupOpen(group.index)]]"
+        >
           <iron-list
-              id$="vesselList[[group.index]]"
-              items="[[group.vessels]]"
-              as="vessel"
-              selection-enabled>
+            id$="vesselList[[group.index]]"
+            items="[[group.vessels]]"
+            as="vessel"
+            selection-enabled
+          >
             <template>
               <paper-item toggles active="[[selected]]" on-tap="_selectVessel">
                 <div>[[vessel.name]]</div>
@@ -80,19 +89,20 @@ class VesselsList extends ContainerPrototype {
           </iron-list>
         </iron-collapse>
       </template>
-    `
+    `;
   }
 
   static get properties() {
     return {
       _vesselGroups: Array,
       _vessels: Array,
+      _selectedGroupIndex: Number,
       _selectedVessel: {
         type: Object,
-        observer: '_selectedVesselObserver',
+        observer: "_selectedVesselObserver"
       },
-      _previouslySelectedGroupIndex: Number,
-    }
+      _previouslySelectedGroupIndex: Number
+    };
   }
 
   _computeColorAndShow(group) {
@@ -100,62 +110,59 @@ class VesselsList extends ContainerPrototype {
   }
 
   _toggleCollapse(event) {
-    const groupIndex = event.model.group.index
-    if (groupIndex != this._previouslySelectedGroupIndex) {
-      const previousGroup = this._selectGroupCollapseElement(this._previouslySelectedGroupIndex)
-      if (previousGroup) previousGroup.hide()
+    const isCurrentlySelected =
+      this._selectedGroupIndex === event.model.group.index;
+
+    if (isCurrentlySelected) {
+      return (this._selectedGroupIndex = null);
     }
-    const group = this._selectGroupCollapseElement(groupIndex)
-    if (group) group.toggle()
-    this._previouslySelectedGroupIndex = groupIndex
+
+    this._selectGroup(event.model.group.index);
+  }
+
+  _selectGroup(groupIndex) {
+    this._selectedGroupIndex = groupIndex;
+  }
+
+  _isGroupOpen(groupIndex) {
+    return groupIndex === this._selectedGroupIndex;
   }
 
   _selectGroupCollapseElement(index) {
-    return this.shadowRoot.querySelector(`#collapse${index}`)
+    return this.shadowRoot.querySelector(`#collapse${index}`);
   }
 
   _selectGroupVesselsListElement(index) {
-    return this.shadowRoot.querySelector(`#vesselList${index}`)
+    return this.shadowRoot.querySelector(`#vesselList${index}`);
   }
 
   _selectVessel(event) {
-    event.preventDefault()
-    event.stopPropagation()
-    const vessel = event.model.vessel
-    if (vessel.mmsi == this.selectedVesselMmsi) return
-    store.dispatch(selectVessel(vessel))
+    event.preventDefault();
+    event.stopPropagation();
+    const vessel = event.model.vessel;
+    if (vessel.mmsi == this.selectedVesselMmsi) return;
+    store.dispatch(selectVessel(vessel));
   }
 
   _selectedVesselObserver(selectedVessel) {
-    if (selectedVessel && selectedVessel.mmsi) {
-      const groupElement = this._selectGroupCollapseElement(selectedVessel.group.index)
-      const listElement = this._selectGroupVesselsListElement(selectedVessel.group.index)
-      const vesselGroup = this._vesselGroups.find(group => group.index == selectedVessel.group.index)
-      const vesselGroupIndex = vesselGroup.vessels.findIndex(vessel => vessel.mmsi == selectedVessel.mmsi)
+    const groupIndex = selectedVessel.group.index;
+    const group = this._vesselGroups.find(group => group.index === groupIndex);
+    const vesselIndex = group.vessels.findIndex(
+      vessel => vessel.mmsi === selectedVessel.mmsi
+    );
 
-      if (this._previouslySelectedGroupIndex != selectedVessel.group.index) {
-        const previousGroupElement = this._selectGroupCollapseElement(this._previouslySelectedGroupIndex)
-        if (previousGroupElement) previousGroupElement.hide()
-        groupElement.show()
-        this._previouslySelectedGroupIndex = selectedVessel.group.index
-      }
+    this._selectGroup(groupIndex);
 
-      if (listElement.selectedItem && listElement.selectedItem.mmsi == selectedVessel.mmsi) return
-      setTimeout(() => { // to be sure that groupElement is already shown
-        listElement.scrollToIndex(vesselGroupIndex)
-        listElement.selectIndex(vesselGroupIndex)
-      })
-    } else {
-      const previousList = this._selectGroupVesselsListElement(this._previouslySelectedGroupIndex)
-      previousList.clearSelection()
-    }
+    const listElement = this._selectGroupVesselsListElement(groupIndex);
+    listElement.scrollToIndex(vesselIndex);
+    listElement.selectIndex(vesselIndex);
   }
 
   _stateChanged(state) {
-    this._selectedVessel = selectedVesselSelector(state)
-    this._vesselGroups = vesselGroupsSelector(state)
-    this._vessels = vesselsSelector(state)
+    this._selectedVessel = selectedVesselSelector(state);
+    this._vesselGroups = vesselGroupsSelector(state);
+    this._vessels = vesselsSelector(state);
   }
 }
 
-customElements.define(VesselsList.is, VesselsList)
+customElements.define(VesselsList.is, VesselsList);
