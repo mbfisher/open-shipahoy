@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes"
+    />
+
+    <title>vessels-list test</title>
+
+    <script>
+      window.process = { env: { NODE_ENV: "production" } };
+    </script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
+    <script
+      src="../assets/ship-ahoy-mapbox-gl.js"
+      crossorigin="use-credentials"
+      type="application/javascript"
+    ></script>
+    <script type="text/javascript">
+      mapboxgl.accessToken =
+        "pk.eyJ1Ijoid2llbTAwOCIsImEiOiJjamN6enQyeDIxaXo3MnhvMWl4aDdyZ25xIn0.JRtqknDdt3bop-LBEkuPcw";
+    </script>
+    <script
+      src="../node_modules/cheap-ruler/cheap-ruler.min.js"
+      crossorigin="use-credentials"
+      type="application/javascript"
+    ></script>
+    <script type="text/javascript">
+      window.ruler = cheapRuler(53.52676, "meters");
+    </script>
+    <script
+      src="../node_modules/rbush/rbush.min.js"
+      crossorigin="use-credentials"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../node_modules/socket.io-client/dist/socket.io.js"
+      crossorigin="use-credentials"
+      type="application/javascript"
+    ></script>
+    <script type="module" src="../assets/pages/map/vessels-list.js"></script>
+  </head>
+  <body>
+    <test-fixture id="BasicTestFixture">
+      <template>
+        <vessels-list></vessels-list>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite("vessels-list", function() {
+        setup(() => {
+          // const vessels = [{"a":71,"b":23,"c":8,"d":11,"de":"HAMBURG","dr":0.2,"e":"2.8","h":303,"i":0,"l":94,"m":12813598,"n":"SCHUB 2637","s":0,"t":79,"ts":1561552474000,"w":19,"x":9.975777,"y":53.531195},{"a":84,"b":9,"c":5,"d":7,"de":"HAMBURG VIA NOK","dr":4.1,"e":"23.6","h":332,"i":9157002,"l":93,"m":209214000,"n":"VERDI","s":0,"t":82,"ts":1561552380000,"w":12,"x":9.956103,"y":53.502023},{"a":141,"b":10,"c":12,"d":11,"de":"HAMBURG","dr":7.7,"e":"24.6","h":102,"i":9584475,"l":151,"m":209857000,"n":"HEINRICH SCHEPERS","s":0.3,"t":79,"ts":1561552475000,"w":23,"x":9.95217,"y":53.534182},{"a":27,"b":0,"c":4,"d":4,"de":"HAMBURG-RIESA-HH","dr":1,"e":"3.10","h":360,"i":0,"l":27,"m":211072478,"n":"ELBE 1","s":0,"t":79,"ts":1561552466000,"w":8,"x":9.960727,"y":53.514667},{"a":5,"b":14,"c":4,"d":2,"de":"N/A","dr":2.5,"e":"0.0","h":360,"i":0,"l":19,"m":211100700,"n":"ATLAS","s":0,"t":52,"ts":1561552424000,"w":6,"x":9.992552,"y":53.521362},{"a":25,"b":8,"c":4,"d":2,"de":"HAMBURG","dr":2,"e":"17.6","h":190,"i":0,"l":33,"m":211110430,"n":"BELUGA II","s":0,"t":36,"ts":1561552262000,"w":6,"x":9.967865,"y":53.505917},{"a":5,"b":10,"c":2,"d":2,"de":"HAMBURG","dr":1.4,"e":"6.3","h":115,"i":0,"l":15,"m":211112870,"n":"WS 23","s":7.6,"t":99,"ts":1561551618000,"w":4,"x":10.016817,"y":53.534067},{"a":23,"b":22,"c":5,"d":6,"de":"HAMBURG","dr":2.8,"e":"10.7","h":83,"i":0,"l":45,"m":211113010,"n":"LOESCHBOOT WESTPHAL","s":0,"t":99,"ts":1561552055000,"w":11,"x":9.984517,"y":53.471055},{"a":17,"b":2,"c":2,"d":3,"de":"HAMBURG","dr":2,"e":"27.2","h":360,"i":0,"l":19,"m":211126880,"n":"ALEX","s":0,"t":52,"ts":1561552478000,"w":5,"x":10.002067,"y":53.525717},{"a":70,"b":15,"c":6,"d":4,"de":"HAMBURG","dr":0,"e":"0.0","h":56,"i":0,"l":85,"m":211143750,"n":"ALINA","s":0,"t":89,"ts":1561552471000,"w":10,"x":10.05252,"y":53.529635}];
+        });
+        test("instantiating the element with default properties works", function(done) {
+          // debugger;
+          var element = fixture("BasicTestFixture");
+
+          element._vesselGroups = [
+            { index: 2, name: "Tanker", color: "#E66569" },
+            { index: 3, name: "Cargo", color: "#089B38" },
+            { index: 4, name: "Passenger", color: "#2651C5" },
+            { index: 5, name: "Pleasure Craft", color: "#CD66D4" },
+            { index: 6, name: "Tugs and Special Craft", color: "#9BC0DD" },
+            { index: 7, name: "Other", color: "#AB1DDF" }
+          ];
+
+          flush(() => {
+            assert.equal(element.innerHTML, "vessels-list");
+            done();
+          });
+          // var elementShadowRoot = element.shadowRoot;
+          // var elementHeader = elementShadowRoot.querySelector("h2");
+          // assert.equal(elementHeader.innerHTML, "Hello vessels-list!");
+        });
+      });
+    </script>
+  </body>
+</html>
